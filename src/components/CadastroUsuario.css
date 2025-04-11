@@ -1,0 +1,113 @@
+.cadastro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f3f4f6;
+    padding: 20px;
+  }
+  
+  .cadastro-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cadastro-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  .cadastro-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .mensagem {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  
+  .mensagem.success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+  
+  .mensagem.error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+  }
+  
+  .cadastro-form {
+    margin-top: 24px;
+  }
+  
+  .form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 6px;
+  }
+  
+  .form-group input {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+  
+  .form-buttons {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .btn-cadastrar {
+    width: 100%;
+    padding: 10px 16px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-cadastrar:hover {
+    background-color: #2563eb;
+  }
+  
+  .btn-cadastrar:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+  }
