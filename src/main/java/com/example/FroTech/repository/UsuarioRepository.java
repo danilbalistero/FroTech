@@ -1,9 +1,11 @@
 package com.example.FroTech.repository;
 
 import com.example.FroTech.model.Usuario;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
+import java.util.Optional;
 
-    Usuario findByEmail( String email);
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+
+    Optional<Usuario> findByEmail(String email);
 }

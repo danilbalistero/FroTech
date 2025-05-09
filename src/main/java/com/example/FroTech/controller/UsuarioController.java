@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuario")
@@ -45,13 +46,13 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
-        Usuario usuarioEncontrado = user.findByEmail(loginDTO.getEmail());
+        Optional<Usuario> usuarioEncontrado = user.findByEmail(loginDTO.getEmail());
 
-        if (usuarioEncontrado == null) {
+        if (usuarioEncontrado.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não encontrado");
         }
 
-        if (!usuarioEncontrado.getSenha().equals(loginDTO.getSenha())) {
+        if (!usuarioEncontrado.get().getSenha().equals(loginDTO.getSenha())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha incorreta");
         }
 
