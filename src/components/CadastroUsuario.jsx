@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './CadastroUsuario.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function CadastroUsuario() {
   const [usuario, setUsuario] = useState({
@@ -7,10 +8,12 @@ export default function CadastroUsuario() {
     email: '',
     senha: '',
   });
-  
+
   const [mensagem, setMensagem] = useState('');
   const [tipoMensagem, setTipoMensagem] = useState('');
 
+  const navigate = useNavigate();
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUsuario({ ...usuario, [name]: value });
@@ -18,7 +21,7 @@ export default function CadastroUsuario() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch('http://localhost:8080/usuario', {
         method: 'POST',
@@ -27,9 +30,8 @@ export default function CadastroUsuario() {
         },
         body: JSON.stringify(usuario),
       });
-      
+
       if (response.ok) {
-        const data = await response.json();
         setMensagem('Usuário cadastrado com sucesso!');
         setTipoMensagem('success');
         setUsuario({
@@ -37,6 +39,10 @@ export default function CadastroUsuario() {
           email: '',
           senha: '',
         });
+
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
       } else {
         const error = await response.json();
         setMensagem(`Erro ao cadastrar: ${error.message || 'Tente novamente'}`);
@@ -54,13 +60,13 @@ export default function CadastroUsuario() {
         <div className="cadastro-header">
           <h2>Cadastro de Usuário</h2>
         </div>
-        
+
         {mensagem && (
           <div className={`mensagem ${tipoMensagem}`}>
             {mensagem}
           </div>
         )}
-        
+
         <form className="cadastro-form" onSubmit={handleSubmit}>
           <div className="form-fields">
             <div className="form-group">
@@ -74,7 +80,7 @@ export default function CadastroUsuario() {
                 onChange={handleChange}
               />
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <input
@@ -86,7 +92,7 @@ export default function CadastroUsuario() {
                 onChange={handleChange}
               />
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="senha">Senha</label>
               <input
@@ -105,6 +111,11 @@ export default function CadastroUsuario() {
               Cadastrar
             </button>
           </div>
+
+          <div className="register-link">
+            Já possui conta? <a href="/login">Entrar</a>
+          </div>
+
         </form>
       </div>
     </div>
