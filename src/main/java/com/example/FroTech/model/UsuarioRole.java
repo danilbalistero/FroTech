@@ -1,9 +1,8 @@
 package com.example.FroTech.model;
 
 public enum UsuarioRole {
-
-    ADMIN("admin"),
-    MOTORISTA("motorista");
+    ADMIN("ROLE_ADMIN"),
+    MOTORISTA("ROLE_MOTORISTA");
 
     private String role;
 

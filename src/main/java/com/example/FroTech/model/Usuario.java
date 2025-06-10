@@ -37,10 +37,11 @@ public class Usuario implements UserDetails {
 
     public Usuario() {}
 
-    public Usuario(String nome, String email, String senha) {
+    public Usuario(String nome, String email, String senha, UsuarioRole role) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
+        this.role = role;
     }
 
     @Override
