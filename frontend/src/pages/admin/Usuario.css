@@ -1,0 +1,76 @@
+:root {
+  --frotech-dark-blue: #091d35;
+  --frotech-yellow: #ebce4c;
+  --frotech-blue: #184376;
+  --frotech-grey-light: #7a91a8;
+  --frotech-grey-dark: #848c94;
+}
+
+.header-conteudo {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 1.5rem;
+}
+
+.novo-usuario-btn {
+  background-color: var(--frotech-blue);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.novo-usuario-btn:hover {
+  background-color: #1a5196; 
+}
+
+.tabela-usuarios {
+  width: 100%;
+  border-collapse: collapse; 
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden; 
+}
+
+.tabela-usuarios thead {
+  background-color: var(--frotech-blue);
+  color: #fff;
+}
+
+.tabela-usuarios th,
+.tabela-usuarios td {
+  text-align: left;
+  padding: 1rem;
+}
+
+.tabela-usuarios tbody tr:nth-child(even) {
+  background-color: #f8f9fa; 
+}
+
+.tabela-usuarios tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.tabela-usuarios td button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  color: #fff;
+}
+
+.tabela-usuarios td button:first-of-type { 
+  background-color: var(--frotech-yellow);
+  color: var(--frotech-dark-blue);
+}
+
+.tabela-usuarios td button:last-of-type { 
+  background-color: #dc3545; 
+}
