@@ -7,7 +7,7 @@ import './Veiculo.css';
 const Veiculo = () => {
   const [veiculos, setVeiculos] = useState([]);
   const [modal, setModal] = useState({ isOpen: false, modo: '', data: null });
-  const [novoVeiculo, setNovoVeiculo] = useState({ placa: '', modelo: '', marca: '', ano: '', kmAtual: '', status: '' });
+  const [novoVeiculo, setNovoVeiculo] = useState({ placa: '', modelo: '', marca: '', ano: '', kmAtual: '', status: 'DISPONIVEL' });
   const [mostrandoInativos, setMostrandoInativos] = useState(false);
 
   useEffect(() => {
