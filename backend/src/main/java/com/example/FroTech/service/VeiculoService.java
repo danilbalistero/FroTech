@@ -31,6 +31,11 @@ public class VeiculoService {
 
         veiculo.setAtivo(true);
         veiculo.setPlaca(veiculo.getPlaca().toUpperCase());
+
+        if (veiculo.getStatus() == null) {
+            veiculo.setStatus(StatusVeiculo.DISPONIVEL);
+        }
+
         return veiculoRepository.save(veiculo);
     }
 
