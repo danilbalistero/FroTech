@@ -1,0 +1,23 @@
+# Pasta de Log
+logs
+*.log
+
+# Dependências do Frontend
+/frontend/node_modules/
+/frontend/dist/
+/frontend/build/
+
+# Dependências e Build do Backend
+/backend/target/
+.mvn/
+
+# Arquivos de Editor e Sistema
+.idea/
+.vscode/
+.history/
+.DS_Store
+
+# Arquivos de ambiente
+.env
+.env.*
+!/.env.example
