@@ -36,6 +36,8 @@ public class Usuario implements UserDetails {
 
     private boolean ativo = true;
 
+    private boolean alterarSenha = true;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

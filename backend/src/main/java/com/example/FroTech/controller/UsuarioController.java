@@ -1,11 +1,14 @@
 package com.example.FroTech.controller;
 
+import com.example.FroTech.dto.DefinirSenhaDTO;
 import com.example.FroTech.dto.UsuarioDTO;
 import com.example.FroTech.model.Usuario;
 import com.example.FroTech.repository.UsuarioRepository;
+import com.example.FroTech.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,9 @@ public class UsuarioController {
     private UsuarioRepository user;
 
     @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
     private PasswordEncoder encoder;
 
     @GetMapping
@@ -31,16 +37,10 @@ public class UsuarioController {
                 .toList();
     }
 
-    @PostMapping
-    public ResponseEntity<?> criarUsuario(@Valid @RequestBody Usuario usuario) {
-        if (user.findByEmail(usuario.getEmail()).isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Já existe um usuário com este e-mail.");
-        }
-
-        usuario.setSenha(encoder.encode(usuario.getSenha()));
-        return ResponseEntity.ok(user.save(usuario));
+    @PutMapping("/definir-senha")
+    public ResponseEntity definirNovaSenha(@RequestBody @Valid DefinirSenhaDTO dto, @AuthenticationPrincipal Usuario usuarioLogado){
+         usuarioService.definirNovaSenha(usuarioLogado, dto.novaSenha());
+         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")

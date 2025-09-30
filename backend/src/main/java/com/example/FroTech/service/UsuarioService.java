@@ -32,5 +32,12 @@ public class UsuarioService {
         return usuarioRepository.save(novoUsuario);
     }
 
+    public void definirNovaSenha(Usuario usuario, String novaSenha){
+        String senhaCriptografada = passwordEncoder.encode(novaSenha);
 
+        usuario.setSenha(senhaCriptografada);
+        usuario.setAlterarSenha(false);
+
+        usuarioRepository.save(usuario);
+    }
 }
