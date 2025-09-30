@@ -1,9 +1,10 @@
 package com.example.FroTech.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +15,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Usuario implements UserDetails {
 
@@ -21,30 +24,18 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
-    @NotEmpty
     @Pattern(regexp = "^[A-Za-zÀ-ÿ\\s]+$", message = "O nome deve conter apenas letras e espaços.")
     private String nome;
 
-    @Setter
-    @NotEmpty
     private String email;
 
-    @Setter
-    @NotEmpty
     private String senha;
 
     @Enumerated(EnumType.STRING)
     private UsuarioRole role;
 
-    public Usuario() {}
+    private boolean ativo = true;
 
-    public Usuario(String nome, String email, String senha, UsuarioRole role) {
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-        this.role = role;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -79,6 +70,6 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return ativo;
     }
 }

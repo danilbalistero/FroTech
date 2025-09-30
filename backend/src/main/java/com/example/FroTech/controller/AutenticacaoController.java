@@ -6,6 +6,7 @@ import com.example.FroTech.dto.LoginResponseDTO;
 import com.example.FroTech.dto.RegistrarDTO;
 import com.example.FroTech.model.Usuario;
 import com.example.FroTech.repository.UsuarioRepository;
+import com.example.FroTech.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class AutenticacaoController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UsuarioRepository repository;
+    private UsuarioService usuarioService;
 
     @Autowired
     private TokenService tokenService;
@@ -42,12 +43,7 @@ public class AutenticacaoController {
 
     @PostMapping("/registrar")
     public ResponseEntity registrar(@RequestBody @Valid RegistrarDTO data){
-        if (this.repository.findByEmail(data.login()).isPresent()) return ResponseEntity.badRequest().build();
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
-        Usuario novousuario = new Usuario(data.nome(), data.login(), encryptedPassword, data.role());
-
-        this.repository.save(novousuario);
+        usuarioService.registrarNovoUsuario(data);
 
         return ResponseEntity.ok().build();
     }
