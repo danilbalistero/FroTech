@@ -1,5 +1,6 @@
 package com.example.FroTech.dto;
 
+import com.example.FroTech.model.Usuario;
 import com.example.FroTech.model.UsuarioRole;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,10 +13,12 @@ public class UsuarioDTO {
     private String email;
     private String role;
 
-    public UsuarioDTO(Long id, String nome, String email, UsuarioRole role) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.role = role != null ? role.getRole() : null;
+    public UsuarioDTO(Usuario usuario) {
+        this.id = usuario.getId();
+        this.nome = usuario.getNome();
+        this.email = usuario.getEmail();
+        if (usuario.getRole() != null) {
+            this.role = usuario.getRole().getRole();
+        }
     }
 }

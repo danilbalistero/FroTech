@@ -4,10 +4,12 @@ import com.example.FroTech.config.TokenService;
 import com.example.FroTech.dto.AutenticacaoDTO;
 import com.example.FroTech.dto.LoginResponseDTO;
 import com.example.FroTech.dto.RegistrarDTO;
+import com.example.FroTech.dto.UsuarioDTO;
 import com.example.FroTech.model.Usuario;
 import com.example.FroTech.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,10 +47,9 @@ public class AutenticacaoController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity registrar(@RequestBody @Valid RegistrarDTO data){
-        usuarioService.registrarNovoUsuario(data);
-
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UsuarioDTO> registrar(@RequestBody @Valid RegistrarDTO data){
+        UsuarioDTO usuarioSalvo = usuarioService.registrarNovoUsuario(data);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
     }
 
 }
