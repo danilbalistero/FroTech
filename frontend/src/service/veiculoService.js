@@ -1,8 +1,18 @@
 const API_URL = 'http://localhost:8080';
 
+const getToken = () => {
+    return localStorage.getItem('authToken');
+}
+
 export const listarVeiculos = async () => {
     try{
-        const response = await fetch(`${API_URL}/veiculos`);
+        const response = await fetch(`${API_URL}/veiculos`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+
         if(!response.ok){
             throw new Error('Erro ao listar veículos');
         }
@@ -19,6 +29,7 @@ export const cadastrarVeiculo = async (dadosVeiculo) => {
         const response = await fetch(`${API_URL}/veiculos`, {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ${getToken()}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(dadosVeiculo),
@@ -39,6 +50,7 @@ export const editarVeiculo = async (id, dadosVeiculo) => {
         const response = await fetch (`${API_URL}/veiculos/${id}`, {
             method: 'PUT',
             headers: {
+                'Authorization': `Bearer ${getToken()}`,
                 'Content-Type': 'application/json',
             }, 
             body: JSON.stringify(dadosVeiculo),
@@ -58,6 +70,9 @@ export const inativarVeiculo = async (id) => {
     try{
         const response = await fetch(`${API_URL}/veiculos/${id}`, {
             method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
         });
 
         if(!response.ok){
@@ -74,6 +89,9 @@ export const listarVeiculosInativos = async () => {
     try{
         const response = await fetch(`${API_URL}/veiculos/inativos`, {
             method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
         });
 
         if(!response.ok){
@@ -91,6 +109,9 @@ export const recuperarVeiculo = async (id) => {
     try{
         const response = await fetch(`${API_URL}/veiculos/${id}/recuperar`, {
             method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
         })
         if(!response.ok){
             throw new Error('Erro ao recuperar veiculos:');
