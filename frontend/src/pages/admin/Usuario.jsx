@@ -1,42 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../components/Modal/Modal';
+import { listarUsuariosAtivos, listarUsuariosInativos, cadastrarUsuario, editarUsuario, inativarUsuario, recuperarUsuario } from '../../service/usuarioService';
 import './Usuario.css';
-
-const usuariosSimulados = [
-  { id: 1, nome: 'João da Silva', email: 'joao@gmail.com', perfil: 'ADMIN' },
-  { id: 2, nome: 'Maria Souza', email: 'maria@gmail.com', perfil: 'MOTORISTA' },
-  { id: 3, nome: 'Pedro Almeida', email: 'pedro@gmail.com', perfil: 'MOTORISTA' },
-];
 
 const Usuario = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [modal, setModal] = useState({ isOpen: false, modo: '', data: null });
-  const [novoUsuario, setNovoUsuario] = useState({ nome: '', email: '', perfil: '' });
+  const [novoUsuario, setNovoUsuario] = useState({ nome: '', email: '', role: '' });
+  const [mostrandoInativos, setMostrandoInativos] = useState(false);
 
   useEffect(() => {
-    // Carrega a lista do localStorage na inicialização
-    const usuariosSalvos = JSON.parse(localStorage.getItem('usuarios'));
-    if (usuariosSalvos && usuariosSalvos.length > 0) {
-      setUsuarios(usuariosSalvos);
-    } else {
-      // Se não houver, usa os dados simulados e salva no localStorage
-      localStorage.setItem('usuarios', JSON.stringify(usuariosSimulados));
-      setUsuarios(usuariosSimulados);
-    }
+    const buscarDados = async () => {
+      try {
+        const data = await listarUsuariosAtivos();
+        setUsuarios(data);
+      } catch (error) {
+        console.error('Erro ao buscar usuarios:', error);
+        alert('Erro ao carregar dados');
+      }
+    };
+    buscarDados();
   }, []);
+
+  const handleAlterarVisao = async () => {
+    const novoEstado = !mostrandoInativos;
+    setMostrandoInativos(novoEstado);
+
+    try {
+      if (novoEstado) {
+        const dados = await listarUsuariosInativos();
+        setUsuarios(dados);
+      } else {
+        const dados = await listarUsuariosAtivos();
+        setUsuarios(dados);
+      }
+    } catch (error) {
+      console.error('Erro ao alternar visualização de usuarios:', error);
+    }
+  }
 
   const handleOpenModal = (modo, usuario = null) => {
     if (modo === 'edicao' || modo === 'exclusao') {
       setNovoUsuario(usuario);
     } else {
-      setNovoUsuario({ nome: '', email: '', perfil: '' });
+      setNovoUsuario({ nome: '', email: '', role: '' });
     }
     setModal({ isOpen: true, modo: modo, data: usuario });
   };
 
   const handleCloseModal = () => {
     setModal({ isOpen: false, modo: '', data: null });
-    setNovoUsuario({ nome: '', email: '', perfil: '' });
+    setNovoUsuario({ nome: '', email: '', role: '' });
   };
 
   const handleInputChange = (e) => {
@@ -44,46 +58,93 @@ const Usuario = () => {
     setNovoUsuario({ ...novoUsuario, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let listaAtualizada = [];
-    if (modal.modo === 'edicao') {
-      listaAtualizada = usuarios.map((usuario) =>
-        usuario.id === modal.data.id ? { ...novoUsuario, id: usuario.id } : usuario
-      );
-    } else if (modal.modo === 'cadastro') {
-      const novoId = usuarios.length > 0 ? usuarios[usuarios.length - 1].id + 1 : 1;
-      const usuarioParaAdicionar = { ...novoUsuario, id: novoId };
-      listaAtualizada = [...usuarios, usuarioParaAdicionar];
+    if (modal.modo === 'cadastro') {
+      try {
+        const usuarioEnviar = {
+          nome: novoUsuario.nome,
+          login: novoUsuario.email,
+          senha: novoUsuario.senha,
+          role: novoUsuario.role
+        };
+        const usuarioSalvo = await cadastrarUsuario(usuarioEnviar);
+        setUsuarios([...usuarios, usuarioSalvo]);
+
+        handleCloseModal();
+      } catch (error) {
+        console.error('Erro ao cadastrar usuario:', error);
+        alert(`Erro ao cadastrar: ${error.message}`);
+      }
+    } else if (modal.modo === 'edicao') {
+      try {
+        const usuarioParaEnviar = {
+          nome: novoUsuario.nome,
+          email: novoUsuario.email,
+          role: novoUsuario.role
+        };
+        const usuarioAtualizado = await editarUsuario(modal.data.id, usuarioParaEnviar);
+        setUsuarios(usuarios.map(u => u.id === usuarioAtualizado.id ? usuarioAtualizado : u));
+
+        handleCloseModal();
+      } catch (error) {
+        console.error('Erro ao editar usuário:', error);
+        alert(`Erro ao editar: ${error.message}`);
+      }
     }
-
-    setUsuarios(listaAtualizada);
-    localStorage.setItem('usuarios', JSON.stringify(listaAtualizada));
-    handleCloseModal();
   };
 
-  const handleConfirmarExclusao = () => {
-    const listaAtualizada = usuarios.filter((usuario) => usuario.id !== modal.data.id);
-    setUsuarios(listaAtualizada);
-    localStorage.setItem('usuarios', JSON.stringify(listaAtualizada));
-    handleCloseModal();
+  const handleConfirmarExclusao = async () => {
+    const idParaInativar = modal.data.id;
+    try {
+      await inativarUsuario(idParaInativar);
+      setUsuarios(usuarios.filter(u => u.id !== idParaInativar));
+      handleCloseModal();
+    } catch (error) {
+      console.error('Erro ao inativar usuario:', error);
+    }
   };
+
+  const handleRecuperar = async (id) => {
+    try {
+      await recuperarUsuario(id);
+      setUsuarios(usuarios.filter(u => u.id !== id));
+    } catch (error) {
+      console.error('Erro ao recuperar usuario:', error);
+    }
+  }
+
+  const formatarRole = (role) => {
+    if (role === 'ROLE_ADMIN') {
+      return 'Administrador';
+    }
+    if (role === 'ROLE_MOTORISTA') {
+      return 'Motorista';
+    }
+    return role;
+  }
 
   return (
     <div>
       <div className="header-conteudo">
-      <h1>Gerenciamento de Usuários</h1>
-      <button className="novo-usuario-btn" onClick={() => handleOpenModal('cadastro')}>Novo Usuário</button>
+        <h1>Gerenciamento de Usuários</h1>
+        <div>
+          <button className='novo-usuario-btn' onClick={handleAlterarVisao}>
+            {mostrandoInativos ? 'Ver Usuários Ativos' : 'Ver Usuários Inativos'}
+          </button>
+
+          {!mostrandoInativos && (
+            <button className="novo-usuario-btn" onClick={() => handleOpenModal('cadastro')}>Novo Usuário</button>
+          )}
+        </div>
       </div>
 
       <table className="tabela-usuarios">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Nome</th>
             <th>Email</th>
-            <th>Senha</th>
             <th>Perfil</th>
             <th>Ações</th>
           </tr>
@@ -92,14 +153,18 @@ const Usuario = () => {
         <tbody>
           {usuarios.map((usuario) => (
             <tr key={usuario.id}>
-              <td>{usuario.id}</td>
               <td>{usuario.nome}</td>
               <td>{usuario.email}</td>
-              <td>{usuario.senha}</td>
-              <td>{usuario.perfil}</td>
+              <td>{formatarRole(usuario.role)}</td>
               <td>
-                <button onClick={() => handleOpenModal('edicao', usuario)}>Editar</button>
-                <button onClick={() => handleOpenModal('exclusao', usuario)}>Excluir</button>
+                {mostrandoInativos ? (
+                  <button onClick={() => handleRecuperar(usuario.id)}>Recuperar</button>
+                ) : (
+                  <>
+                    <button onClick={() => handleOpenModal('edicao', usuario)}>Editar</button>
+                    <button onClick={() => handleOpenModal('exclusao', usuario)}>Inativar</button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
@@ -110,10 +175,10 @@ const Usuario = () => {
         {modal.modo === 'exclusao' ? (
           <div>
             <h2>Confirmar Exclusão</h2>
-            <p>Tem certeza que deseja excluir o usuário {modal.data.nome}?</p>
+            <p>Tem certeza que deseja inativar o usuário {modal.data.nome}?</p>
             <div className="botoes-modal">
-            <button onClick={handleConfirmarExclusao}>Sim, Excluir</button>
-            <button onClick={handleCloseModal}>Cancelar</button>
+              <button onClick={handleConfirmarExclusao}>Sim, inativar</button>
+              <button onClick={handleCloseModal}>Cancelar</button>
             </div>
           </div>
         ) : (
@@ -136,7 +201,7 @@ const Usuario = () => {
               )}
               <div>
                 <label>Perfil:</label>
-                <select name="perfil" required value={novoUsuario.perfil} onChange={handleInputChange}>
+                <select name="role" required value={novoUsuario.role} onChange={handleInputChange}>
                   <option value="">Selecione</option>
                   <option value="ADMIN">Administrador</option>
                   <option value="MOTORISTA">Motorista</option>
