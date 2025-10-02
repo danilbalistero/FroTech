@@ -8,9 +8,14 @@
 
 .header-conteudo {
   display: flex;
-  justify-content: space-between; 
-  align-items: center; 
-  margin-bottom: 1.5rem; 
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header-botoes {
+  display: flex;
+  gap: 1rem;
 }
 
 .novo-veiculo-btn {
@@ -25,17 +30,17 @@
 }
 
 .novo-veiculo-btn:hover {
-  background-color: #1a5196; 
+  background-color: #1a5196;
 }
 
 .tabela-veiculos {
   width: 100%;
-  border-collapse: collapse; 
+  border-collapse: collapse;
   margin-top: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   border-radius: 8px;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 .tabela-veiculos thead {
@@ -45,32 +50,54 @@
 
 .tabela-veiculos th,
 .tabela-veiculos td {
-  text-align: left;
+  text-align: center;
   padding: 1rem;
 }
 
 .tabela-veiculos tbody tr:nth-child(even) {
-  background-color: #f8f9fa; 
+  background-color: #f8f9fa;
 }
 
 .tabela-veiculos tbody tr:hover {
   background-color: #e9ecef;
 }
 
-.tabela-veiculos td button {
-  padding: 0.4rem 0.8rem;
+.tabela-veiculos td.acoes {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.tabela-veiculos .btn-acao {
+  padding: 0.5rem 0.8rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 0.5rem;
-  color: #fff;
+  color: white;
+  font-weight: 500;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-width: 80px;
+  text-align: center;
 }
 
-.tabela-veiculos td button:first-of-type { 
+.tabela-veiculos .btn-acao:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-editar {
   background-color: var(--frotech-yellow);
   color: var(--frotech-dark-blue);
 }
 
-.tabela-veiculos td button:last-of-type { 
-  background-color: #dc3545; 
+.btn-inativar {
+  background-color: #dc3545;
+}
+
+.btn-recuperar {
+  background-color: #28a745;
+}
+
+.tabela-veiculos .col-acoes {
+  width: 300px;
 }

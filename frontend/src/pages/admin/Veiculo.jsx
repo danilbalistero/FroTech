@@ -52,7 +52,7 @@ const Veiculo = () => {
     };
 
     if (modal.modo === 'edicao') {
-      try { 
+      try {
         const veiculoAtualizado = await editarVeiculo(modal.data.id, veiculoParaEnviar);
         setVeiculos(veiculos.map(v =>
           v.id === veiculoAtualizado.id ? veiculoAtualizado : v
@@ -120,7 +120,7 @@ const Veiculo = () => {
     <div>
       <div className="header-conteudo">
         <h1>Gerenciar Veículos</h1>
-        <div>
+        <div className="header-botoes">
           <button className='novo-veiculo-btn' onClick={handleAlterarVisao}>
             {mostrandoInativos ? 'Ver Veículos Ativos' : 'Ver Veículos Inativos'}
           </button>
@@ -128,41 +128,38 @@ const Veiculo = () => {
           {!mostrandoInativos && (
             <button className="novo-veiculo-btn" onClick={() => handleOpenModal('cadastro')}>Adicionar Veículo</button>
           )}
-
         </div>
       </div>
 
       <table className="tabela-veiculos">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Placa</th>
             <th>Modelo</th>
             <th>Marca</th>
             <th>Ano</th>
             <th>KM</th>
             <th>Status</th>
-            <th>Ações</th>
+            <th className="col-acoes">Ações</th>
           </tr>
         </thead>
 
         <tbody>
           {veiculos.map((veiculo) => (
             <tr key={veiculo.id}>
-              <td>{veiculo.id}</td>
               <td>{veiculo.placa}</td>
               <td>{veiculo.modelo}</td>
               <td>{veiculo.marca}</td>
               <td>{veiculo.ano}</td>
               <td>{veiculo.kmAtual}</td>
               <td>{veiculo.status}</td>
-              <td>
+              <td className="acoes col-acoes">
                 {mostrandoInativos ? (
-                  <button onClick={() => handleRecuperar(veiculo.id)}>Recuperar</button>
+                  <button className="btn-acao btn-recuperar" onClick={() => handleRecuperar(veiculo.id)}>Recuperar</button>
                 ) : (
                   <>
-                    <button onClick={() => handleOpenModal('edicao', veiculo)}>Editar</button>
-                    <button onClick={() => handleOpenModal('exclusao', veiculo)}>Inativar</button>
+                    <button className="btn-acao btn-editar" onClick={() => handleOpenModal('edicao', veiculo)}>Editar</button>
+                    <button className="btn-acao btn-inativar" onClick={() => handleOpenModal('exclusao', veiculo)}>Inativar</button>
                   </>
                 )}
               </td>
@@ -226,4 +223,5 @@ const Veiculo = () => {
     </div>
   );
 }
+
 export default Veiculo;
