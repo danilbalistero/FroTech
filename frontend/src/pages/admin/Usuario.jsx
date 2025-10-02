@@ -136,16 +136,15 @@ const Usuario = () => {
       }
     }
   }
-  
+
   return (
     <div>
       <div className="header-conteudo">
         <h1>Gerenciamento de Usuários</h1>
-        <div>
+        <div className="header-botoes">
           <button className='novo-usuario-btn' onClick={handleAlterarVisao}>
             {mostrandoInativos ? 'Ver Usuários Ativos' : 'Ver Usuários Inativos'}
           </button>
-
           {!mostrandoInativos && (
             <button className="novo-usuario-btn" onClick={() => handleOpenModal('cadastro')}>Novo Usuário</button>
           )}
@@ -161,21 +160,20 @@ const Usuario = () => {
             <th>Ações</th>
           </tr>
         </thead>
-
         <tbody>
           {usuarios.map((usuario) => (
             <tr key={usuario.id}>
               <td>{usuario.nome}</td>
               <td>{usuario.email}</td>
               <td>{formatarRole(usuario.role)}</td>
-              <td>
+              <td className="acoes">
                 {mostrandoInativos ? (
-                  <button onClick={() => handleRecuperar(usuario.id)}>Recuperar</button>
+                  <button className="btn-acao btn-recuperar" onClick={() => handleRecuperar(usuario.id)}>Recuperar</button>
                 ) : (
                   <>
-                    <button onClick={() => handleResetarSenha(usuario.id)}>Resetar Senha</button>
-                    <button onClick={() => handleOpenModal('edicao', usuario)}>Editar</button>
-                    <button onClick={() => handleOpenModal('exclusao', usuario)}>Inativar</button>
+                    <button className="btn-acao btn-resetar" onClick={() => handleResetarSenha(usuario.id)}>Resetar Senha</button>
+                    <button className="btn-acao btn-editar" onClick={() => handleOpenModal('edicao', usuario)}>Editar</button>
+                    <button className="btn-acao btn-inativar" onClick={() => handleOpenModal('exclusao', usuario)}>Inativar</button>
                   </>
                 )}
               </td>
@@ -187,10 +185,10 @@ const Usuario = () => {
       <Modal isOpen={modal.isOpen} onClose={handleCloseModal}>
         {modal.modo === 'exclusao' ? (
           <div>
-            <h2>Confirmar Exclusão</h2>
-            <p>Tem certeza que deseja inativar o usuário {modal.data.nome}?</p>
+            <h2>Confirmar Inativação</h2>
+            <p>Tem certeza que deseja inativar o usuário {modal.data?.nome}?</p>
             <div className="botoes-modal">
-              <button onClick={handleConfirmarExclusao}>Sim, inativar</button>
+              <button onClick={handleConfirmarExclusao}>Sim, Inativar</button>
               <button onClick={handleCloseModal}>Cancelar</button>
             </div>
           </div>
@@ -200,24 +198,24 @@ const Usuario = () => {
             <form onSubmit={handleSubmit}>
               <div>
                 <label>Nome:</label>
-                <input type='text' name='nome' required value={novoUsuario.nome} onChange={handleInputChange} />
+                <input type='text' name='nome' required value={novoUsuario.nome || ''} onChange={handleInputChange} />
               </div>
               <div>
                 <label>Email:</label>
-                <input type='text' name='email' required value={novoUsuario.email} onChange={handleInputChange} />
+                <input type='email' name='email' required value={novoUsuario.email || ''} onChange={handleInputChange} />
               </div>
               {modal.modo === 'cadastro' && (
                 <div>
                   <label>Senha:</label>
-                  <input type='password' name='senha' required value={novoUsuario.senha} onChange={handleInputChange} />
+                  <input type='password' name='senha' required value={novoUsuario.senha || ''} onChange={handleInputChange} />
                 </div>
               )}
               <div>
                 <label>Perfil:</label>
-                <select name="role" required value={novoUsuario.role} onChange={handleInputChange}>
+                <select name="role" required value={novoUsuario.role || ''} onChange={handleInputChange}>
                   <option value="">Selecione</option>
-                  <option value="ADMIN">Administrador</option>
-                  <option value="MOTORISTA">Motorista</option>
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="MOTORISTA">MOTORISTA</option>
                 </select>
               </div>
               <div className="botoes-modal">
