@@ -140,7 +140,7 @@ const Usuario = () => {
   return (
     <div>
       <div className="header-conteudo">
-        <h1>Gerenciamento de Usuários</h1>
+        <h1>Gerenciar Usuários</h1>
         <div className="header-botoes">
           <button className='novo-usuario-btn' onClick={handleAlterarVisao}>
             {mostrandoInativos ? 'Ver Usuários Ativos' : 'Ver Usuários Inativos'}
