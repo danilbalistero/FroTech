@@ -1,15 +1,15 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-const Rotas = ({ children, perfilPermitido}) => {
-    const token = localStorage.getItem('token');
-    const perfil = localStorage.getItem('perfil');
+const Rotas = ({ children, perfilPermitido }) => {
+    const token = localStorage.getItem('authToken');
+    const perfil = localStorage.getItem('userRole');
 
     if (!token) {
         return <Navigate to="/" />;
     }
 
-    if (perfilPermitido && perfil !== perfilPermitido){
+    if (perfilPermitido && perfil !== perfilPermitido) {
         return <Navigate to='/acesso-negado' replace />;
     }
 
