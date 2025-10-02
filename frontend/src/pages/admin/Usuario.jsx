@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../components/Modal/Modal';
-import { listarUsuariosAtivos, listarUsuariosInativos, cadastrarUsuario, editarUsuario, inativarUsuario, recuperarUsuario } from '../../service/usuarioService';
+import { listarUsuariosAtivos, listarUsuariosInativos, cadastrarUsuario, editarUsuario, inativarUsuario, recuperarUsuario, resetarSenha } from '../../service/usuarioService';
 import './Usuario.css';
 
 const Usuario = () => {
@@ -125,6 +125,18 @@ const Usuario = () => {
     return role;
   }
 
+  const handleResetarSenha = async (id) => {
+    if (window.confirm('Tem certeza que deseja resetar a senha deste usuário? Uma nova senha temporária será gerada.')) {
+      try {
+        const senhaTemporaria = await resetarSenha(id);
+
+        alert(`Senha resetada com sucesso! A nova senha temporaria é: ${senhaTemporaria}`);
+      } catch (error) {
+        console.error('Erro ao resetar senha:', error);
+      }
+    }
+  }
+  
   return (
     <div>
       <div className="header-conteudo">
@@ -161,6 +173,7 @@ const Usuario = () => {
                   <button onClick={() => handleRecuperar(usuario.id)}>Recuperar</button>
                 ) : (
                   <>
+                    <button onClick={() => handleResetarSenha(usuario.id)}>Resetar Senha</button>
                     <button onClick={() => handleOpenModal('edicao', usuario)}>Editar</button>
                     <button onClick={() => handleOpenModal('exclusao', usuario)}>Inativar</button>
                   </>

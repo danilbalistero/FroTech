@@ -7,11 +7,21 @@ import LayoutAdmin from "./components/LayoutAdmin";
 import Usuario from "./pages/admin/Usuario";
 import Veiculo from "./pages/admin/Veiculo";
 import Manutencao from "./pages/admin/Manutencao";
+import DefinirSenha from "./pages/auth/DefinirSenha";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+
+      <Route
+        path="/definir-senha"
+        element={
+          <Rotas>
+            <DefinirSenha />
+          </Rotas>
+        }
+      />
 
       <Route
         path="/admin"

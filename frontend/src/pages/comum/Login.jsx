@@ -1,64 +1,71 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from '../../service/authService';
+import { jwtDecode } from "jwt-decode";
+import './Auth.css';
 
 const Login = () => {
     const [email, setEmail] = React.useState("");
     const [senha, setSenha] = React.useState("");
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
-        e.preventDefault(); 
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
-        // Simulação de autenticação
-        if (email === "admin@gmail.com" && senha === "123") {
-            const token = 'token-fake-admin';
-            const perfil = 'ADMIN';
+        try {
+            const resposta = await login(email, senha);
 
-            localStorage.setItem('token', token);
-            localStorage.setItem('perfil', perfil);
+            localStorage.setItem('authToken', resposta.token);
 
-            navigate('/admin/dashboard');
-        } else if (email === "motorista@gmail.com" && senha === "123") {
-            const token = 'token-fake-motorista';
-            const perfil = 'MOTORISTA';
-        
-            localStorage.setItem('token', token);
-            localStorage.setItem('perfil', perfil);
+            const usuarioDecodificado = jwtDecode(resposta.token);
+            const role = usuarioDecodificado.role;
 
-            navigate('/motorista');
-        } else {
-            alert("Credenciais inválidas");
+            localStorage.setItem('userRole', role);
+
+            if (resposta.alterarSenha) {
+                navigate('/definir-senha');
+            } else if (role === 'ADMIN') {
+                navigate('/admin/dashboard');
+            } else if (role === 'MOTORISTA') {
+                navigate('/motorista/dashboard');
+            } else {
+                alert('Perfil de usuário não reconhecido.');
+            }
+
+        } catch (error) {
+            console.error('Erro ao realizar login:', error);
+            alert('Email ou senha incorretos. Tente novamente.');
         }
-
     };
 
     return (
-        <div>
-            <h1>Login</h1>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="senha">Senha:</label>
-                    <input
-                        type='password'
-                        id="senha"
-                        name="senha"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                    />
-                </div>
-                <button type="submit">Entrar</button>
-            </form>
+        <div className="auth-container">
+            <div className="auth-form">
+                <h1>Login</h1>
+                <form onSubmit={handleLogin}>
+                    <div className="input-group">
+                        <label htmlFor="email">Email:</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="senha">Senha:</label>
+                        <input
+                            type='password'
+                            id="senha"
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit">Entrar</button>
+                </form>
+            </div>
         </div>
     );
 };
