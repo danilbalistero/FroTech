@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import DashboardCard from "../../components/Card/DashboardCard";
-import { listarVeiculos } from "../../service/veiculoService";
 import './Dashboard.css';
 import { FaCar, FaUsers } from 'react-icons/fa';
 import { GrHostMaintenance } from "react-icons/gr";
-
+import * as veiculoService from '../../service/veiculoService';
+import * as usuarioService from '../../service/usuarioService';
 
 const Dashboard = () => {
   const [veiculos, setVeiculos] = useState([]);
@@ -12,26 +12,37 @@ const Dashboard = () => {
   const [manutencoes, setManutencoes] = useState([]);
 
   useEffect(() => {
-    const veiculosSalvos = JSON.parse(localStorage.getItem('veiculos')) || [];
-    const usuariosSalvos = JSON.parse(localStorage.getItem('usuarios')) || [];
-    const manutencoesSalvas = JSON.parse(localStorage.getItem('manutencoes')) || [];
+    const buscarDadosDashboard = async () => {
+      try {
+        const [veiculosData, usuariosData] = await Promise.all([
+          veiculoService.listarVeiculos(),
+          usuarioService.listarUsuariosAtivos(),
+        ]);
 
-    setVeiculos(veiculosSalvos);
-    setUsuarios(usuariosSalvos);
-    setManutencoes(manutencoesSalvas);
+        setVeiculos(veiculosData);
+        setUsuarios(usuariosData);
+
+      } catch (error) {
+        console.error("Erro ao carregar dados do dashboard:", error);
+        alert('Não foi possível carregar os dados do dashboard.');
+      }
+    };
+
+    buscarDadosDashboard();
   }, []);
 
-const totalVeiculos = veiculos.length;
-const veiculosAtivos = veiculos.filter(v => v.status === 'ATIVO').length;
+  const totalVeiculos = veiculos.length;
+  const veiculosDisponiveis = veiculos.filter(v => v.status === 'DISPONIVEL').length;
 
-const usuariosAdmin = usuarios.filter(u => u.perfil === 'ADMIN').length;
-const usuariosMotoristas = usuarios.filter(u => u.perfil === 'MOTORISTA').length;
-const usuariosRole = `${usuariosAdmin} administradores e ${usuariosMotoristas} motoristas`
+  const totalUsuarios = usuarios.length;
+  const usuariosAdmin = usuarios.filter(u => u.role === 'ROLE_ADMIN').length;
+  const usuariosMotoristas = usuarios.filter(u => u.role === 'ROLE_MOTORISTA').length;
+  const subtituloUsuarios = `${usuariosAdmin} admin(s) e ${usuariosMotoristas} motorista(s)`;
 
-const totalManutencoes = manutencoes.length;
-const manutencoesAndamento = manutencoes.filter(m => m.status === 'ANDAMENTO').length;
-const manutencoesAgendadas = manutencoes.filter(m => m.status === 'AGENDADA').length;
-const subtituloManutencoes = `${manutencoesAndamento} em andamento, ${manutencoesAgendadas} agendadas`;
+  const totalManutencoes = manutencoes.length;
+  const manutencoesAndamento = manutencoes.filter(m => m.status === 'ANDAMENTO').length;
+  const manutencoesAgendadas = manutencoes.filter(m => m.status === 'AGENDADA').length;
+  const subtituloManutencoes = `${manutencoesAndamento} em andamento, ${manutencoesAgendadas} agendadas`;
 
   return (
     <div className="container-dashboard">
@@ -41,28 +52,27 @@ const subtituloManutencoes = `${manutencoesAndamento} em andamento, ${manutencoe
         <DashboardCard
           titulo="Total de Veículos"
           valor={totalVeiculos}
-          subtitulo={`${veiculosAtivos} ativos`}
-          icone={<FaCar/>}
+          subtitulo={`${veiculosDisponiveis} disponíveis`}
+          icone={<FaCar />}
         />
 
         <DashboardCard
           titulo="Total de Usuários"
-          valor={usuarios.length}
-          subtitulo={usuariosRole}
-          icone={<FaUsers/>}
+          valor={totalUsuarios}
+          subtitulo={subtituloUsuarios}
+          icone={<FaUsers />}
         />
 
         <DashboardCard
-        titulo="Total de Manutenções"
-        valor={totalManutencoes}
-        subtitulo={subtituloManutencoes} 
-        icone={<GrHostMaintenance />}
-      />
+          titulo="Total de Manutenções"
+          valor={totalManutencoes}
+          subtitulo={subtituloManutencoes}
+          icone={<GrHostMaintenance />}
+        />
 
       </div>
     </div>
   );
-
 };
 
 export default Dashboard;
