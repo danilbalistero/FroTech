@@ -5,6 +5,7 @@ import { FaCar, FaUsers } from 'react-icons/fa';
 import { GrHostMaintenance } from "react-icons/gr";
 import * as veiculoService from '../../service/veiculoService';
 import * as usuarioService from '../../service/usuarioService';
+import * as manutencaoService from '../../service/manutencaoService';
 
 const Dashboard = () => {
   const [veiculos, setVeiculos] = useState([]);
@@ -14,13 +15,15 @@ const Dashboard = () => {
   useEffect(() => {
     const buscarDadosDashboard = async () => {
       try {
-        const [veiculosData, usuariosData] = await Promise.all([
+        const [veiculosData, usuariosData, manutencoesData] = await Promise.all([
           veiculoService.listarVeiculos(),
           usuarioService.listarUsuariosAtivos(),
+          manutencaoService.listarManutencoes(),
         ]);
 
         setVeiculos(veiculosData);
         setUsuarios(usuariosData);
+        setManutencoes(manutencoesData);
 
       } catch (error) {
         console.error("Erro ao carregar dados do dashboard:", error);
