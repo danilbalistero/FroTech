@@ -107,11 +107,14 @@ const Usuario = () => {
   };
 
   const handleRecuperar = async (id) => {
-    try {
-      await recuperarUsuario(id);
-      setUsuarios(usuarios.filter(u => u.id !== id));
-    } catch (error) {
-      console.error('Erro ao recuperar usuario:', error);
+    if (window.confirm('Tem certeza que deseja recuperar este usuario?')) {
+      try {
+        await recuperarUsuario(id);
+        setUsuarios(usuarios.filter(u => u.id !== id));
+        alert("Usuario recuperado com sucesso!");
+      } catch (error) {
+        console.error('Erro ao recuperar usuario:', error);
+      }
     }
   }
 
