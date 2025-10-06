@@ -43,11 +43,12 @@ export const cadastrarUsuario = async (dadosUsuario) => {
             body: JSON.stringify(dadosUsuario)
         });
         if (!response.ok) {
-            const data = await response.json();
-            return data;
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Erro ao cadastrar usuário');
         }
+        return await response.json();
     } catch (error) {
-        console.error('Erro:', error);
+        console.error('Erro em cadastrarUsuario:', error);
         throw error;
     }
 };
