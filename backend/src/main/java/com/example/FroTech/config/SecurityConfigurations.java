@@ -29,12 +29,14 @@ public class SecurityConfigurations {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+
+                        .requestMatchers(HttpMethod.PUT, "/usuario/definir-senha").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/auth/registrar").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/usuario/**").hasAuthority("ROLE_ADMIN")
-
-                        .requestMatchers("/veiculos/**").permitAll()
-
+                        .requestMatchers("/veiculos/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/manutencoes/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
