@@ -53,6 +53,7 @@ public class VeiculoService {
         veiculoExistente.setModelo(veiculo.getModelo());
         veiculoExistente.setAno(veiculo.getAno());
         veiculoExistente.setKmAtual(veiculo.getKmAtual());
+        veiculoExistente.setCapacidadeTanque(veiculo.getCapacidadeTanque());
         veiculoExistente.setStatus(veiculo.getStatus());
 
         return veiculoRepository.save(veiculoExistente);

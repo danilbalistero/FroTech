@@ -28,4 +28,5 @@ public class Veiculo {
     private StatusVeiculo status;
 
     private boolean ativo = true;
+    private Double capacidadeTanque;
 }
