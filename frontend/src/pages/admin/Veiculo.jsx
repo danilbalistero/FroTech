@@ -139,6 +139,7 @@ const Veiculo = () => {
             <th>Marca</th>
             <th>Ano</th>
             <th>KM</th>
+            <th>Capacidade Tanque</th>
             <th>Status</th>
             <th className="col-acoes">Ações</th>
           </tr>
@@ -152,6 +153,7 @@ const Veiculo = () => {
               <td>{veiculo.marca}</td>
               <td>{veiculo.ano}</td>
               <td>{veiculo.kmAtual}</td>
+              <td>{veiculo.capacidadeTanque}</td>
               <td>{veiculo.status}</td>
               <td className="acoes col-acoes">
                 {mostrandoInativos ? (
@@ -204,6 +206,9 @@ const Veiculo = () => {
 
               <label>KM Atual:</label>
               <input type="number" name="kmAtual" value={novoVeiculo.kmAtual} onChange={handleInputChange} required />
+
+              <label>Capacidade do Tanque (L)</label>
+              <input type='number' name='capacidadeTanque' value={novoVeiculo.capacidadeTanque} onChange={handleInputChange} required />
 
               <label>Status:</label>
               <select name="status" value={novoVeiculo.status} onChange={handleInputChange} required>
