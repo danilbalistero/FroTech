@@ -1,13 +1,15 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/comum/Login";
 import DashboardAdmin from "./pages/admin/Dashboard";
-import DashboardMotorista from "./pages/motorista/Dashboard";
+import DashboardMotorista from "./pages/motorista/DashboardMotorista";
 import Rotas from "./routes/Rotas";
 import LayoutAdmin from "./components/LayoutAdmin";
 import Usuario from "./pages/admin/Usuario";
 import Veiculo from "./pages/admin/Veiculo";
 import Manutencao from "./pages/admin/Manutencao";
 import DefinirSenha from "./pages/auth/DefinirSenha";
+import Abastecimento from "./pages/motorista/Abastecimento";
+import LayoutMotorista from "./components/LayoutMotorista";
 
 function App() {
   return (
@@ -41,11 +43,12 @@ function App() {
         path="/motorista"
         element={
           <Rotas perfilPermitido="MOTORISTA">
-            <DashboardMotorista />
+            <LayoutMotorista />
           </Rotas>
         }
       >
-        <Route index element={<DashboardMotorista />} />
+        <Route path="dashboard" element={<DashboardMotorista />} />
+        <Route path="abastecimentos" element={<Abastecimento />} />
       </Route>
     </Routes>
   );
