@@ -35,6 +35,7 @@ public class AbastecimentoService {
         novoAbastecimento.setData(dto.data());
         novoAbastecimento.setKmAbastecimento(dto.kmAbastecimento());
         novoAbastecimento.setLitros(dto.litros());
+        novoAbastecimento.setValorLitro(dto.valorLitro());
         novoAbastecimento.setCusto(dto.custo());
         novoAbastecimento.setTipoCombustivel(dto.tipoCombustivel());
         novoAbastecimento.setTanqueCheio(dto.tanqueCheio());

@@ -17,6 +17,7 @@ public class Abastecimento {
     private LocalDate data;
     private Double custo;
     private Double litros;
+    private Double valorLitro;
     private Integer kmAbastecimento;
     private boolean tanqueCheio;
 

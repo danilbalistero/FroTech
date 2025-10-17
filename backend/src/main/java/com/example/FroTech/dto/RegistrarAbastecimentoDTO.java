@@ -9,6 +9,7 @@ public record RegistrarAbastecimentoDTO(
         LocalDate data,
         Integer kmAbastecimento,
         Double litros,
+        Double valorLitro,
         Double custo,
         boolean tanqueCheio,
         TipoCombustivel tipoCombustivel
