@@ -1,0 +1,90 @@
+.abastecimento-container {
+    max-width: 800px; 
+    margin: 2rem auto; 
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.abastecimento-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #091d35; 
+}
+
+.abastecimento-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+}
+
+.abastecimento-form label {
+    font-weight: bold;
+    margin-bottom: -0.5rem; 
+    color: #333;
+}
+
+.abastecimento-form input,
+.abastecimento-form select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box; 
+}
+
+.abastecimento-form input:focus,
+.abastecimento-form select:focus {
+    outline: none;
+    border-color: #184376; 
+    box-shadow: 0 0 0 2px rgba(24, 67, 118, 0.2);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: auto; 
+}
+
+.checkbox-container label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.abastecimento-form button[type="submit"] {
+    padding: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #184376; 
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+}
+
+.abastecimento-form button[type="submit"]:hover {
+    background-color: #091d35; 
+}
+
+@media (min-width: 768px) {
+    .abastecimento-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr; 
+        gap: 1.5rem; 
+    }
+
+    .abastecimento-container h1,
+    .checkbox-container,
+    .abastecimento-form button[type="submit"] {
+        grid-column: 1 / -1; 
+    }
+}
