@@ -1,0 +1,107 @@
+.checklist-container {
+    padding: 2rem;
+    max-width: 600px;
+    margin: 2rem auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: sans-serif;
+}
+
+.checklist-titulo {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.checklist-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.checklist-form label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: -1rem; 
+}
+
+.checklist-form select,
+.checklist-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.checklist-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.items-titulo {
+    font-size: 1.2rem;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.checklist-item input[type="checkbox"] {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.checklist-item label {
+    font-weight: normal; 
+    margin-bottom: 0;
+    color: #333;
+}
+
+.submit-btn {
+    padding: 0.9rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+.custom-checkbox {
+    width: 28px;
+    height: 28px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.custom-checkbox.checked {
+    border-color: #28a745;
+    background-color: #28a745;
+    color: white;
+}
+
+.custom-checkbox.unchecked {
+    color: #dc3545;
+}
