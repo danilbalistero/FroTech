@@ -10,6 +10,8 @@ import Manutencao from "./pages/admin/Manutencao";
 import DefinirSenha from "./pages/auth/DefinirSenha";
 import Abastecimento from "./pages/motorista/Abastecimento";
 import LayoutMotorista from "./components/LayoutMotorista";
+import Relatorio from './pages/admin/Relatorio';
+import Checklist from "./pages/motorista/Checklist";
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
         <Route path="usuario" element={<Usuario />} />
         <Route path="veiculos" element={<Veiculo />} />
         <Route path="manutencao" element={<Manutencao />} />
+        <Route path="relatorios" element={<Relatorio />} />
       </Route>
 
       <Route
@@ -49,6 +52,7 @@ function App() {
       >
         <Route path="dashboard" element={<DashboardMotorista />} />
         <Route path="abastecimentos" element={<Abastecimento />} />
+        <Route path="checklist" element={<Checklist />} />
       </Route>
     </Routes>
   );

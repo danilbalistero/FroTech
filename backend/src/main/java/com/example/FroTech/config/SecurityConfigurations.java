@@ -36,10 +36,12 @@ public class SecurityConfigurations {
 
                         .requestMatchers(HttpMethod.POST, "/auth/registrar").hasAuthority("ROLE_ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, "usuario/meu-veiculo").hasAuthority("ROLE_MOTORISTA")
+
                         .requestMatchers("/usuario/**").hasAuthority("ROLE_ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/veiculos/**").hasAnyAuthority("ROLE_MOTORISTA")
-                        .requestMatchers(HttpMethod.PUT,"/veiculos/**/devolver").hasAuthority("ROLE_MOTORISTA")
+                        .requestMatchers(HttpMethod.GET, "/veiculos/**").hasAnyAuthority("ROLE_MOTORISTA", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/veiculos/*/devolver").hasAuthority("ROLE_MOTORISTA")
 
                         .requestMatchers("/veiculos/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/manutencoes/**").hasAuthority("ROLE_ADMIN")
