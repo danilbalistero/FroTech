@@ -122,3 +122,42 @@ export const recuperarVeiculo = async (id) => {
         throw error;
     }
 };
+
+export const listarVeiculosDisponiveis = async () => {
+    try{
+        const response = await fetch(`${API_URL}/veiculos/disponiveis`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        })
+        if(!response.ok){
+            throw new Error('Erro ao listar veiculos com Status Disponivel');
+        }
+        const data = await response.json();
+        return data;
+    } catch(error) {
+        console.error('Erro ao listar veiculos com Status Disponivel:', error);
+        throw error;
+    }
+}
+
+export const devolverVeiculo = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/veiculos/${id}/devolver`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao devolver veículo');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Erro ao devolver veículo:', error);
+        throw error;
+    }
+};

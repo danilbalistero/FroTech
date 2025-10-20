@@ -131,3 +131,27 @@ export const inativarUsuario = async (id) => {
         throw error;
     }
 };
+
+export const buscarVeiculoEmUso = async () => {
+    try {
+        const response = await fetch(`${API_URL}/usuario/meu-veiculo`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+        
+        if (response.status === 204) {
+            return null;
+        }
+
+        if (!response.ok) {
+            throw new Error('Erro ao buscar veículo em uso');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Erro ao buscar veículo em uso:', error);
+        throw error;
+    }
+};
