@@ -58,4 +58,8 @@ public class VeiculoController {
         veiculoService.recuperar(id);
     }
 
+    @GetMapping("/disponiveis")
+    public List<Veiculo> listarVeiculosDisponiveis(){
+        return veiculoService.listarVeiculosStatusDisponivel();
+    }
 }

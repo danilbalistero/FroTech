@@ -88,4 +88,8 @@ public class VeiculoService {
         return false;
     }
 
+    public List<Veiculo> listarVeiculosStatusDisponivel(){
+        return veiculoRepository.findByAtivoTrueAndStatus(StatusVeiculo.DISPONIVEL);
+    }
+
 }
