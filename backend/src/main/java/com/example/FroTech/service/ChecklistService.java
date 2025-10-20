@@ -43,6 +43,7 @@ public class ChecklistService {
 
         veiculo.setStatus(StatusVeiculo.INDISPONIVEL);
 
+        veiculo.setUsuario(usuario);
         veiculoRepository.save(veiculo);
 
         return checklistRepository.save(checklist);

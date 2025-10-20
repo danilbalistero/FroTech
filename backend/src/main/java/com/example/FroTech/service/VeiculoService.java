@@ -92,4 +92,17 @@ public class VeiculoService {
         return veiculoRepository.findByAtivoTrueAndStatus(StatusVeiculo.DISPONIVEL);
     }
 
+    public Veiculo devolverVeiculo(Long veiculoId){
+        Veiculo veiculo = veiculoRepository.findById(veiculoId)
+                .orElseThrow(() -> new RuntimeException("veiculo com id " + veiculoId + " não encontrado"));
+
+        if (veiculo.getStatus() != StatusVeiculo.INDISPONIVEL){
+            throw new IllegalStateException("Este veículo não está em uso para ser devolvido.");
+        }
+
+        veiculo.setStatus(StatusVeiculo.DISPONIVEL);
+        veiculo.setUsuario(null);
+
+        return veiculoRepository.save(veiculo);
+    }
 }

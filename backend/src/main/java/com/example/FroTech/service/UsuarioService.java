@@ -4,7 +4,9 @@ import com.example.FroTech.dto.AtualizarUsuarioDTO;
 import com.example.FroTech.dto.RegistrarDTO;
 import com.example.FroTech.dto.UsuarioDTO;
 import com.example.FroTech.model.Usuario;
+import com.example.FroTech.model.Veiculo;
 import com.example.FroTech.repository.UsuarioRepository;
+import com.example.FroTech.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private VeiculoRepository veiculoRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -108,5 +113,17 @@ public class UsuarioService {
 
         usuarioRepository.save(usuario);
         return senhaTemporaria;
+    }
+
+    public Optional<Veiculo> buscarVeiculoEmUso(String email){
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+
+        if(usuario.isEmpty()){
+            return Optional.empty();
+        }
+
+        Usuario usuarioEncontrado = usuario.get();
+
+        return veiculoRepository.findByUsuario(usuarioEncontrado);
     }
 }

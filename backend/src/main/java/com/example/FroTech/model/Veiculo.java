@@ -29,4 +29,8 @@ public class Veiculo {
 
     private boolean ativo = true;
     private Double capacidadeTanque;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 }

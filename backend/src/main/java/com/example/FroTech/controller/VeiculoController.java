@@ -62,4 +62,14 @@ public class VeiculoController {
     public List<Veiculo> listarVeiculosDisponiveis(){
         return veiculoService.listarVeiculosStatusDisponivel();
     }
+
+    @PutMapping("/{id}/devolver")
+    public ResponseEntity<Veiculo> devolverVeiculo(@PathVariable Long id){
+        try {
+            Veiculo veiculoDevolvido = veiculoService.devolverVeiculo(id);
+            return ResponseEntity.ok(veiculoDevolvido);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 }

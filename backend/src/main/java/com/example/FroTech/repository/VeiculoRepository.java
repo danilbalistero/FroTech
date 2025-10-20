@@ -1,6 +1,7 @@
 package com.example.FroTech.repository;
 
 import com.example.FroTech.model.StatusVeiculo;
+import com.example.FroTech.model.Usuario;
 import com.example.FroTech.model.Veiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
@@ -14,4 +15,5 @@ public interface VeiculoRepository extends JpaRepository<Veiculo, Long> {
     Optional<Veiculo> findByIdAndAtivoTrue(Long id);
     List<Veiculo> findByAtivoFalse();
     List<Veiculo> findByAtivoTrueAndStatus(StatusVeiculo statusVeiculo);
+    Optional<Veiculo> findByUsuario(Usuario usuario);
 }
