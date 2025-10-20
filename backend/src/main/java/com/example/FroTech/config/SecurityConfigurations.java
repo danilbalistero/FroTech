@@ -35,12 +35,18 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/usuario/definir-senha").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/auth/registrar").hasAuthority("ROLE_ADMIN")
+
                         .requestMatchers("/usuario/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/veiculos").hasAnyAuthority("ROLE_ADMIN", "ROLE_MOTORISTA")
+
+                        .requestMatchers(HttpMethod.GET, "/veiculos/**").hasAnyAuthority("ROLE_MOTORISTA")
+                        .requestMatchers(HttpMethod.PUT,"/veiculos/**/devolver").hasAuthority("ROLE_MOTORISTA")
+
                         .requestMatchers("/veiculos/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/manutencoes/**").hasAuthority("ROLE_ADMIN")
 
                         .requestMatchers("/abastecimentos/**").hasAuthority("ROLE_MOTORISTA")
+                        .requestMatchers("/checklists").hasAuthority("ROLE_MOTORISTA")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
