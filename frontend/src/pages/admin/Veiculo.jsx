@@ -9,6 +9,16 @@ const Veiculo = () => {
   const [modal, setModal] = useState({ isOpen: false, modo: '', data: null });
   const [novoVeiculo, setNovoVeiculo] = useState({ placa: '', modelo: '', marca: '', ano: '', kmAtual: '', status: 'DISPONIVEL' });
   const [mostrandoInativos, setMostrandoInativos] = useState(false);
+  const anoAtual = new Date().getFullYear();
+  const anoMaximo = anoAtual + 1;
+
+  const [modalAviso, setModalAviso] = useState({
+    isOpen: false,
+    titulo: '',
+    mensagem: '',
+    onConfirm: null,
+    isConfirmation: false
+  });
 
   useEffect(() => {
     const buscarDados = async () => {
@@ -17,24 +27,44 @@ const Veiculo = () => {
         setVeiculos(veiculos);
       } catch (error) {
         console.error('Erro ao buscar veículos:', error);
+        showAlert('Erro', 'Não foi possível carregar os veículos. Tente novamente.');
       }
     };
 
     buscarDados();
   }, []);
 
+  const showAlert = (titulo, mensagem, onConfirmCallback = null) => {
+    setModalAviso({ isOpen: true, titulo, mensagem, onConfirm: onConfirmCallback, isConfirmation: false });
+  };
+
+  const showConfirm = (titulo, mensagem, onConfirmCallback) => {
+    setModalAviso({ isOpen: true, titulo, mensagem, onConfirm: onConfirmCallback, isConfirmation: true });
+  };
+
+  const handleCloseAviso = () => {
+    setModalAviso({ isOpen: false, titulo: '', mensagem: '', onConfirm: null, isConfirmation: false });
+  };
+
+  const handleConfirmAviso = () => {
+    if (modalAviso.onConfirm) {
+      modalAviso.onConfirm();
+    }
+    handleCloseAviso();
+  };
+
   const handleOpenModal = (modo, veiculo = null) => {
     if (modo === 'edicao' || modo === 'exclusao') {
       setNovoVeiculo(veiculo);
     } else {
-      setNovoVeiculo({ placa: '', modelo: '', marca: '', ano: '', kmAtual: '', status: '' });
+      setNovoVeiculo({ placa: '', modelo: '', marca: '', ano: '', kmAtual: '', status: 'DISPONIVEL' });
     }
     setModal({ isOpen: true, modo: modo, data: veiculo });
   };
 
   const handleCloseModal = () => {
     setModal({ isOpen: false, modo: '', data: null });
-    setNovoVeiculo({ placa: '', modelo: '', marca: '', ano: '', kmAtual: '', status: '' });
+    setNovoVeiculo({ placa: '', modelo: '', marca: '', ano: '', kmAtual: '', status: 'DISPONIVEL' });
   }
 
   const handleInputChange = (e) => {
@@ -48,7 +78,8 @@ const Veiculo = () => {
     const veiculoParaEnviar = {
       ...novoVeiculo,
       ano: parseInt(novoVeiculo.ano),
-      kmAtual: parseInt(novoVeiculo.kmAtual)
+      kmAtual: parseInt(novoVeiculo.kmAtual),
+      capacidadeTanque: parseFloat(novoVeiculo.capacidadeTanque)
     };
 
     if (modal.modo === 'edicao') {
@@ -58,19 +89,21 @@ const Veiculo = () => {
           v.id === veiculoAtualizado.id ? veiculoAtualizado : v
         ));
         handleCloseModal();
+        showAlert('Sucesso', 'Veículo editado com sucesso!');
       } catch (error) {
-        console.error('Erro ao editar usuario:', error);
+        console.error('Erro ao editar veiculo:', error);
+        showAlert('Erro', 'Não foi possível editar o veículo.');
       }
 
     } else if (modal.modo === 'cadastro') {
       try {
         const veiculoSalvo = await cadastrarVeiculo(veiculoParaEnviar);
-
         setVeiculos([...veiculos, veiculoSalvo]);
         handleCloseModal();
-
+        showAlert('Sucesso', 'Veículo cadastrado com sucesso!');
       } catch (error) {
         console.error('Erro ao cadastrar veiculo:', error);
+        showAlert('Erro', 'Não foi possível cadastrar o veículo.');
       }
     }
   }
@@ -81,22 +114,25 @@ const Veiculo = () => {
       await inativarVeiculo(idParaInativar);
       setVeiculos(veiculos.filter(v => v.id !== idParaInativar));
       handleCloseModal();
+      showAlert('Sucesso', 'Veículo inativado com sucesso.');
     } catch (error) {
       console.error('Erro ao inativar veiculo:', error);
+      handleCloseModal();
+      showAlert('Erro', 'Não foi possível inativar o veículo.');
     }
   }
 
-  const handleRecuperar = async (id) => {
-    if (window.confirm('Tem certeza que deseja recuperar este veículo?')) {
+  const handleRecuperar = (id) => {
+    showConfirm('Recuperar Veículo', 'Tem certeza que deseja recuperar este veículo?', async () => {
       try {
         await recuperarVeiculo(id)
         setVeiculos(veiculos.filter(v => v.id !== id));
-        alert('Veiculo recuperado com sucesso!');
+        showAlert('Sucesso', 'Veiculo recuperado com sucesso!');
       } catch (error) {
         console.error('Erro ao recuperar veiculo:', error);
-        alert('Erro ao recuperar veiculo');
+        showAlert('Erro', 'Erro ao recuperar veiculo.');
       }
-    }
+    });
   }
 
   const handleAlterarVisao = async () => {
@@ -113,6 +149,7 @@ const Veiculo = () => {
       }
     } catch (error) {
       console.error('Erro ao alternar a visualização dos veiculos:', error);
+      showAlert('Erro', 'Não foi possível carregar a lista de veículos.');
     }
   };
 
@@ -177,7 +214,7 @@ const Veiculo = () => {
             <p>Deseja inativar veículo {modal.data?.modelo} placa {modal.data?.placa}?</p>
             <div className='botoes-modal'>
               <button onClick={handleConfirmarExclusao}>Sim</button>
-              <button onClick={handleCloseModal}>Não</button>
+              <button type="button" onClick={handleCloseModal}>Não</button>
             </div>
           </div>
         ) : (
@@ -187,7 +224,7 @@ const Veiculo = () => {
               <label>Placa:</label>
               <IMaskInput
                 mask={"aaa0a00"}
-                value={novoVeiculo.placa}
+                value={novoVeiculo.placa || ''}
                 unmask={true}
                 onAccept={(value) => handleInputChange({ target: { name: 'placa', value: value.toUpperCase() } })}
                 name="placa"
@@ -196,22 +233,31 @@ const Veiculo = () => {
               />
 
               <label>Modelo:</label>
-              <input type="text" name="modelo" value={novoVeiculo.modelo} onChange={handleInputChange} required />
+              <input type="text" name="modelo" value={novoVeiculo.modelo || ''} onChange={handleInputChange} required />
 
               <label>Marca:</label>
-              <input type="text" name="marca" value={novoVeiculo.marca} onChange={handleInputChange} required />
+              <input type="text" name="marca" value={novoVeiculo.marca || ''} onChange={handleInputChange} required />
 
               <label>Ano:</label>
-              <input type="number" name="ano" value={novoVeiculo.ano} onChange={handleInputChange} required />
+              <input
+                type="number"
+                name="ano"
+                value={novoVeiculo.ano || ''}
+                onChange={handleInputChange}
+                required
+                placeholder={`Ex: ${anoAtual}`}
+                min="1980"
+                max={anoMaximo}
+              />
 
               <label>KM Atual:</label>
-              <input type="number" name="kmAtual" value={novoVeiculo.kmAtual} onChange={handleInputChange} required />
+              <input type="number" name="kmAtual" value={novoVeiculo.kmAtual || ''} onChange={handleInputChange} required />
 
               <label>Capacidade do Tanque (L)</label>
-              <input type='number' name='capacidadeTanque' value={novoVeiculo.capacidadeTanque} onChange={handleInputChange} required />
+              <input type='number' name='capacidadeTanque' value={novoVeiculo.capacidadeTanque || ''} onChange={handleInputChange} required />
 
               <label>Status:</label>
-              <select name="status" value={novoVeiculo.status} onChange={handleInputChange} required>
+              <select name="status" value={novoVeiculo.status || 'DISPONIVEL'} onChange={handleInputChange} required>
                 <option value="DISPONIVEL">Disponível</option>
                 <option value="INDISPONIVEL">Indisponível</option>
                 <option value="MANUTENCAO">Em Manutenção</option>
@@ -225,6 +271,24 @@ const Veiculo = () => {
           </div>
         )}
       </Modal >
+
+      <Modal isOpen={modalAviso.isOpen} onClose={handleCloseAviso}>
+        <div>
+          <h2>{modalAviso.titulo}</h2>
+          <p>{modalAviso.mensagem}</p>
+          <div className="botoes-modal">
+            {modalAviso.isConfirmation && (
+              <button type="button" onClick={handleCloseAviso}>
+                Cancelar
+              </button>
+            )}
+            <button type="button" onClick={handleConfirmAviso}>
+              {modalAviso.isConfirmation ? 'Sim' : 'OK'}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
     </div>
   );
 }

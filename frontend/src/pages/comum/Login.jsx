@@ -3,11 +3,26 @@ import { useNavigate } from "react-router-dom";
 import { login } from '../../service/authService';
 import { jwtDecode } from "jwt-decode";
 import './Auth.css';
+import Modal from '../../components/Modal/Modal';
 
 const Login = () => {
     const [email, setEmail] = React.useState("");
     const [senha, setSenha] = React.useState("");
     const navigate = useNavigate();
+
+    const [modalAviso, setModalAviso] = React.useState({
+        isOpen: false,
+        titulo: '',
+        mensagem: ''
+    });
+
+    const showAlert = (titulo, mensagem) => {
+        setModalAviso({ isOpen: true, titulo, mensagem });
+    };
+
+    const handleCloseAviso = () => {
+        setModalAviso({ isOpen: false, titulo: '', mensagem: '' });
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -29,12 +44,12 @@ const Login = () => {
             } else if (role === 'MOTORISTA') {
                 navigate('/motorista/dashboard');
             } else {
-                alert('Perfil de usuário não reconhecido.');
+                showAlert('Erro', 'Perfil de usuário não reconhecido.');
             }
 
         } catch (error) {
             console.error('Erro ao realizar login:', error);
-            alert('Email ou senha incorretos. Tente novamente.');
+            showAlert('Erro de Login', 'Email ou senha incorretos. Tente novamente.');
         }
     };
 
@@ -66,6 +81,18 @@ const Login = () => {
                     <button type="submit">Entrar</button>
                 </form>
             </div>
+
+            <Modal isOpen={modalAviso.isOpen} onClose={handleCloseAviso}>
+                <div>
+                    <h2>{modalAviso.titulo}</h2>
+                    <p>{modalAviso.mensagem}</p>
+                    <div className="botoes-modal">
+                        <button type="button" onClick={handleCloseAviso}>
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };

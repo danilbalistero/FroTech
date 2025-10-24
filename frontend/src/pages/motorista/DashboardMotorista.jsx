@@ -8,8 +8,14 @@ import './DashboardMotorista.css';
 
 const DashboardMotorista = () => {
     const [veiculoEmUso, setVeiculoEmUso] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false); 
     const navigate = useNavigate();
+
+    const [modalAviso, setModalAviso] = useState({
+        isOpen: false,
+        titulo: '',
+        mensagem: ''
+    });
 
     useEffect(() => {
         const verificarVeiculo = async () => {
@@ -18,27 +24,38 @@ const DashboardMotorista = () => {
                 setVeiculoEmUso(veiculo); 
             } catch (error) {
                 console.error("Não foi possível verificar o veículo em uso", error);
+                showAlert('Erro', 'Não foi possível verificar seu veículo em uso.');
             }
         };
         verificarVeiculo();
     }, []); 
+
+    const showAlert = (titulo, mensagem) => {
+        setModalAviso({ isOpen: true, titulo, mensagem });
+    };
+
+    const handleCloseAviso = () => {
+        setModalAviso({ isOpen: false, titulo: '', mensagem: '' });
+    };
 
     const handleDevolver = async () => {
         if (!veiculoEmUso) return;
 
         try {
             await devolverVeiculo(veiculoEmUso.id);
-            alert(`Veículo ${veiculoEmUso.placa} devolvido com sucesso!`);
+            
             setVeiculoEmUso(null); 
             setIsModalOpen(false); 
+            showAlert('Sucesso', `Veículo ${veiculoEmUso.placa} devolvido com sucesso!`);
         } catch (error) {
-            alert("Falha ao devolver o veículo. Tente novamente.");
+            setIsModalOpen(false); 
+            showAlert('Erro', 'Falha ao devolver o veículo. Tente novamente.'); 
         }
     };
 
     const handleNavigateAbastecimento = () => {
         if (!veiculoEmUso) {
-            alert("Você precisa estar em uma jornada para registrar um abastecimento. Realize o checklist primeiro.");
+            showAlert('Atenção', 'Você precisa estar em uma jornada para registrar um abastecimento. Realize o checklist primeiro.');
             return;
         }
         navigate(`/motorista/abastecimentos?veiculoId=${veiculoEmUso.id}&placa=${veiculoEmUso.placa}`);
@@ -70,20 +87,21 @@ const DashboardMotorista = () => {
                 <p>Deseja mesmo finalizar a jornada com o veículo {veiculoEmUso?.placa}?</p>
                 <div className='botoes-modal'>
                     <button onClick={handleDevolver}>Sim, finalizar</button>
-                    <button onClick={() => setIsModalOpen(false)}>Não</button>
+                    <button type="button" onClick={() => setIsModalOpen(false)}>Não</button>
                 </div>
             </Modal>
 
-                        {/* 
-            <section className="atividades-recentes">
-                <h2>Atividades Recentes</h2>
-                <ul className="atvidades-list">
-                    <li className="atividades-item">Checklist realizado no Veículo X - 14/10/2025</li>
-                    <li className="atividades-item">Abastecimento (32.8L) registrado - 13/10/2025</li>
-                    <li className="atividades-item">Jornada finalizada - 12/10/2025</li>
-                </ul>
-            </section>
-            */}
+            <Modal isOpen={modalAviso.isOpen} onClose={handleCloseAviso}>
+                <div>
+                    <h2>{modalAviso.titulo}</h2>
+                    <p>{modalAviso.mensagem}</p>
+                    <div className="botoes-modal">
+                        <button type="button" onClick={handleCloseAviso}>
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </Modal>
 
         </div>
     );
