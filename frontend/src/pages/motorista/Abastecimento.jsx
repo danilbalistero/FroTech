@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { listarVeiculos } from "../../service/veiculoService";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import './Abastecimento.css';
 import { registrarAbastecimento } from "../../service/abastecimentoService";
+import Modal from '../../components/Modal/Modal';
 
 const Abastecimento = () => {
     const navigate = useNavigate();
-    const [veiculos, setVeiculos] = useState([]);
+    const [searchParams] = useSearchParams();
+    const veiculoIdUrl = searchParams.get('veiculoId');
+    const veiculoPlacaUrl = searchParams.get('placa');
+    const [modalInfo, setModalInfo] = useState({ isOpen: false, message: '', onConfirm: null });
     const [novoAbastecimento, setNovoAbastecimento] = useState({
-        veiculoId: '',
+        veiculoId: veiculoIdUrl || '',
         data: '',
         kmAbastecimento: '',
         litros: '',
@@ -17,18 +20,6 @@ const Abastecimento = () => {
         tipoCombustivel: '',
         tanqueCheio: false
     });
-
-    useEffect(() => {
-        const buscarDados = async () => {
-            try {
-                const veiculosData = await listarVeiculos();
-                setVeiculos(veiculosData);
-            } catch (error) {
-                console.error('Erro ao buscar veículos:', error);
-            }
-        };
-        buscarDados();
-    }, []);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -53,8 +44,11 @@ const Abastecimento = () => {
         try {
             await registrarAbastecimento(enviarDados);
 
-            alert('Abastecimento registrado com sucesso');
-            navigate('/motorista/dashboard');
+            setModalInfo({
+                isOpen: true,
+                message: 'Abastecimento registrado com sucesso!',
+                onConfirm: () => navigate('/motorista/dashboard')
+            });
 
         } catch (error) {
             console.error('Erro ao enviar:', error);
@@ -67,15 +61,15 @@ const Abastecimento = () => {
             <h1>Registrar Abastecimento</h1>
 
             <form onSubmit={handleSubmit} className="abastecimento-form">
-                <label htmlFor="veiculoId">Veículo:</label>
-                <select id="veiculoId" name="veiculoId" value={novoAbastecimento.veiculoId} onChange={handleInputChange} required>
-                    <option value="">Selecione um veículo</option>
-                    {veiculos.map(veiculo => (
-                        <option key={veiculo.id} value={veiculo.id}>
-                            {veiculo.modelo} - {veiculo.placa}
-                        </option>
-                    ))}
-                </select>
+                <label>Veículo:</label>
+                <div>
+                    <input
+                        type="text"
+                        value={`${veiculoPlacaUrl} (Em uso)`}
+                        disabled
+                        style={{ backgroundColor: '#eee' }}
+                    />
+                </div>
 
                 <label htmlFor="data">Data do Abastecimento:</label>
                 <input type="date" id="data" name="data" value={novoAbastecimento.data} onChange={handleInputChange} required />
@@ -84,13 +78,13 @@ const Abastecimento = () => {
                 <input type="number" id="kmAbastecimento" name="kmAbastecimento" value={novoAbastecimento.kmAbastecimento} onChange={handleInputChange} placeholder="Ex: 50600" required />
 
                 <label htmlFor="litros">Litros Abastecidos:</label>
-                <input type="number" id="litros" name="litros" step="0.01" value={novoAbastecimento.litros} onChange={handleInputChange} placeholder="Ex: 35.5" required />
+                <input type="number" id="litros" name="litros" step="0.01" min="0.01" value={novoAbastecimento.litros} onChange={handleInputChange} placeholder="Ex: 35.5" required />
 
                 <label htmlFor="custo">Custo Total (R$):</label>
-                <input type="number" id="custo" name="custo" step="0.01" value={novoAbastecimento.custo} onChange={handleInputChange} placeholder="Ex: 175.50" required />
+                <input type="number" id="custo" name="custo" step="0.01" min="0.01" value={novoAbastecimento.custo} onChange={handleInputChange} placeholder="Ex: 175.50" required />
 
                 <label htmlFor="valorLitro">Valor por Litro (R$):</label>
-                <input type="number" id="valorLitro" name="valorLitro" step="0.001" value={novoAbastecimento.valorLitro} onChange={handleInputChange} placeholder="Ex: 5.499" required />
+                <input type="number" id="valorLitro" name="valorLitro" step="0.001" min="0.001" value={novoAbastecimento.valorLitro} onChange={handleInputChange} placeholder="Ex: 5.499" required />
 
                 <label htmlFor="tipoCombustivel">Tipo de Combustível:</label>
                 <select id="tipoCombustivel" name="tipoCombustivel" value={novoAbastecimento.tipoCombustivel} onChange={handleInputChange} required>
@@ -106,6 +100,22 @@ const Abastecimento = () => {
 
                 <button type="submit">Registrar</button>
             </form>
+
+            <Modal isOpen={modalInfo.isOpen} onClose={() => setModalInfo({ isOpen: false, message: '', onConfirm: null })}>
+                <h2>Aviso</h2>
+                <p>{modalInfo.message}</p>
+                <div className='botoes-modal'>
+                    <button onClick={() => {
+                        if (modalInfo.onConfirm) {
+                            modalInfo.onConfirm();
+                        }
+                        setModalInfo({ isOpen: false, message: '', onConfirm: null });
+                    }}>
+                        OK
+                    </button>
+                </div>
+            </Modal>
+
         </div>
     )
 }
