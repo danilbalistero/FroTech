@@ -2,6 +2,7 @@ package com.example.FroTech.service;
 
 import com.example.FroTech.model.Manutencao;
 import com.example.FroTech.model.StatusManutencao;
+import com.example.FroTech.model.StatusVeiculo;
 import com.example.FroTech.model.Veiculo;
 import com.example.FroTech.repository.ManutencaoRepository;
 import com.example.FroTech.repository.VeiculoRepository;
@@ -78,6 +79,11 @@ public class ManutencaoService {
             throw new IllegalArgumentException("Manutenção não iniciada, pois so é permitido iniciar manutenções agendadas");
         }
 
+        Veiculo veiculoManutencao = manutencaoExiste.getVeiculo();
+
+        veiculoManutencao.setStatus(StatusVeiculo.MANUTENCAO);
+        veiculoRepository.save(veiculoManutencao);
+
         manutencaoExiste.setStatus(StatusManutencao.ANDAMENTO);
 
         return manutencaoRepository.save(manutencaoExiste);
@@ -90,6 +96,11 @@ public class ManutencaoService {
         if (!manutencaoExiste.getStatus().equals(StatusManutencao.ANDAMENTO)){
             throw new IllegalArgumentException("Não foi possivel concluir a manutenção");
         }
+
+        Veiculo veiculoManutencao = manutencaoExiste.getVeiculo();
+
+        veiculoManutencao.setStatus(StatusVeiculo.DISPONIVEL);
+        veiculoRepository.save(veiculoManutencao);
 
         manutencaoExiste.setDataRealizada(dataRealizada);
         manutencaoExiste.setCusto(custo);
