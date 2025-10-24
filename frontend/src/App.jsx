@@ -1,60 +1,69 @@
 import { Routes, Route } from "react-router-dom";
-import Login from "./pages/comum/Login";
-import DashboardAdmin from "./pages/admin/Dashboard";
-import DashboardMotorista from "./pages/motorista/DashboardMotorista";
 import Rotas from "./routes/Rotas";
+import { lazy, Suspense } from "react";
+import Login from "./pages/comum/Login";
 import LayoutAdmin from "./components/LayoutAdmin";
-import Usuario from "./pages/admin/Usuario";
-import Veiculo from "./pages/admin/Veiculo";
-import Manutencao from "./pages/admin/Manutencao";
-import DefinirSenha from "./pages/auth/DefinirSenha";
-import Abastecimento from "./pages/motorista/Abastecimento";
 import LayoutMotorista from "./components/LayoutMotorista";
-import Relatorio from './pages/admin/Relatorio';
-import Checklist from "./pages/motorista/Checklist";
+const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const Usuario = lazy(() => import("./pages/admin/Usuario"));
+const Veiculo = lazy(() => import("./pages/admin/Veiculo"));
+const Manutencao = lazy(() => import("./pages/admin/Manutencao"));
+const Relatorio = lazy(() => import('./pages/admin/Relatorio'));
+const DashboardMotorista = lazy(() => import("./pages/motorista/DashboardMotorista"));
+const Abastecimento = lazy(() => import("./pages/motorista/Abastecimento"));
+const Checklist = lazy(() => import("./pages/motorista/Checklist"));
+const DefinirSenha = lazy(() => import("./pages/auth/DefinirSenha"));
+
+const FallbackCarregando = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f4f4f9' }}>
+    <h2 style={{ color: '#091d35' }}>Carregando...</h2>
+  </div>
+);
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
+    <Suspense fallback={<FallbackCarregando />}>
+      <Routes>
+        <Route path="/" element={<Login />} />
 
-      <Route
-        path="/definir-senha"
-        element={
-          <Rotas>
-            <DefinirSenha />
-          </Rotas>
-        }
-      />
+        <Route
+          path="/definir-senha"
+          element={
+            <Rotas>
+              <DefinirSenha />
+            </Rotas>
+          }
+        />
 
-      <Route
-        path="/admin"
-        element={
-          <Rotas perfilPermitido="ADMIN">
-            <LayoutAdmin />
-          </Rotas>
-        }
-      >
-        <Route path="dashboard" element={<DashboardAdmin />} />
-        <Route path="usuario" element={<Usuario />} />
-        <Route path="veiculos" element={<Veiculo />} />
-        <Route path="manutencao" element={<Manutencao />} />
-        <Route path="relatorios" element={<Relatorio />} />
-      </Route>
+        <Route
+          path="/admin"
+          element={
+            <Rotas perfilPermitido="ADMIN">
+              <LayoutAdmin />
+            </Rotas>
+          }
+        >
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="usuario" element={<Usuario />} />
+          <Route path="veiculos" element={<Veiculo />} />
+          <Route path="manutencao" element={<Manutencao />} />
+          <Route path="relatorios" element={<Relatorio />} />
+        </Route>
 
-      <Route
-        path="/motorista"
-        element={
-          <Rotas perfilPermitido="MOTORISTA">
-            <LayoutMotorista />
-          </Rotas>
-        }
-      >
-        <Route path="dashboard" element={<DashboardMotorista />} />
-        <Route path="abastecimentos" element={<Abastecimento />} />
-        <Route path="checklist" element={<Checklist />} />
-      </Route>
-    </Routes>
+        <Route
+          path="/motorista"
+          element={
+            <Rotas perfilPermitido="MOTORISTA">
+              <LayoutMotorista />
+            </Rotas>
+          }
+        >
+          <Route path="dashboard" element={<DashboardMotorista />} />
+          <Route path="abastecimentos" element={<Abastecimento />} />
+          <Route path="checklist" element={<Checklist />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }
 
