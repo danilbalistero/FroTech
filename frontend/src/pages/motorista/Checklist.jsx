@@ -3,6 +3,7 @@ import { listarVeiculosDisponiveis } from '../../service/veiculoService';
 import { realizarChecklist } from '../../service/checklistService';
 import { useNavigate } from 'react-router-dom';
 import './Checklist.css';
+import Modal from '../../components/Modal/Modal'; 
 
 const Checklist = () => {
     const [veiculos, setVeiculos] = useState([]);
@@ -11,6 +12,12 @@ const Checklist = () => {
     const [observacoes, setObservacoes] = useState('');
     const navigate = useNavigate();
 
+    const [modalInfo, setModalInfo] = useState({
+        isOpen: false,
+        message: '',
+        onConfirm: null 
+    });
+
     useEffect(() => {
         const buscarDados = async () => {
             try {
@@ -18,11 +25,27 @@ const Checklist = () => {
                 setVeiculos(veiculos);
             } catch (error) {
                 console.error('Erro ao listar veiculos com status disponivel:', error);
-                alert('Não foi possível carregar os veículos. Tente novamente.');
+                showAlertModal('Não foi possível carregar os veículos. Tente novamente.');
             }
         };
         buscarDados();
     }, []);
+
+    const showAlertModal = (message, onConfirmCallback = null) => {
+        setModalInfo({
+            isOpen: true,
+            message: message,
+            onConfirm: onConfirmCallback
+        });
+    };
+
+    const handleCloseModal = () => {
+        const callback = modalInfo.onConfirm;
+        setModalInfo({ isOpen: false, message: '', onConfirm: null });
+        if (callback) {
+            callback();
+        }
+    };
 
     const handleItemChange = (e) => {
         const { name, checked } = e.target;
@@ -36,14 +59,14 @@ const Checklist = () => {
         e.preventDefault();
 
         if (!veiculoId) {
-            alert('Por favor, selecione um veículo!');
+            showAlertModal('Por favor, selecione um veículo!');
             return;
         }
 
         const todosItensMarcados = Object.values(itens).every(item => item === true);
 
         if (!todosItensMarcados) {
-            alert('Por favor, marque todos os itens de verificação antes de continuar.');
+            showAlertModal('Por favor, marque todos os itens de verificação antes de continuar.');
             return;
         }
 
@@ -51,13 +74,10 @@ const Checklist = () => {
             const dadosChecklist = { ...itens, observacoes };
 
             await realizarChecklist(dadosChecklist, veiculoId);
-
-            alert('Checklist enviado com sucesso!');
-            navigate('/motorista/dashboard');
-
+            showAlertModal('Checklist enviado com sucesso!', () => navigate('/motorista/dashboard'));
         } catch (error) {
             console.error('Erro ao enviar o checklist:', error);
-            alert('Falha ao enviar o checklist. Verifique os dados e tente novamente.');
+            showAlertModal('Falha ao enviar o checklist. Verifique os dados e tente novamente.');
         }
     };
 
@@ -113,6 +133,18 @@ const Checklist = () => {
 
                 <button type="submit" className="submit-btn">Finalizar Checklist</button>
             </form>
+            
+            <Modal isOpen={modalInfo.isOpen} onClose={handleCloseModal}>
+                <div>
+                    <h2>Aviso</h2>
+                    <p>{modalInfo.message}</p>
+                    <div className="botoes-modal">
+                        <button type="button" onClick={handleCloseModal}>
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 }
